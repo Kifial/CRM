@@ -2,60 +2,73 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { requestForm, resolveForm, logUser } from '../actions/forms.jsx';
 import { browserHistory } from 'react-router';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+
+const styles = {
+  formStyle: {
+    padding: '20px 15px'
+  },
+  submitStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1
+  },
+  submitWrapStyle: {
+    margin: '10px 0 0'
+  }
+};
 
 class RegForm extends React.Component {
   constructor(props) {
     super(props);
   }
   render() {
-    let login, password, confirmPassword;
     return (
-      <form>
+      <form style={styles.formStyle}>
         <div>
-          <label htmlFor="login">Login</label>
-          <input
+          <TextField
+            hintText="Login Field"
             type="text"
-            placeholder="Login"
             name="login"
-            ref={node => {
-              login = node;
-            }}
             value={this.props.login || ''}
-            onChange={() => this.props.handleChange(login.value, login.name)}
+            onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
-          <input
+          <TextField
+            hintText="Password Field"
             type="password"
-            placeholder="Password"
             name="password"
             value={this.props.password || ''}
-            ref={node => {
-              password = node;
-            }}
-            onChange={() => this.props.handleChange(password.value, password.name)}
+            onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
           />
         </div>
         <div>
-          <label htmlFor="confirmPassword">Confirm password</label>
-          <input
+          <TextField
+            hintText="Confirm password Field"
             type="password"
-            placeholder="Confirm password"
             name="confirmPassword"
-            value={this.props.confirmPassword || ''}
-            ref={node => {
-              confirmPassword = node;
-            }}
-            onChange={() => this.props.handleChange(confirmPassword.value, confirmPassword.name)}
+            value={this.props.password || ''}
+            onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
           />
         </div>
-        <button onClick={(e) => this.props.handleSubmit(e, {
-          login: this.props.login,
-          password: this.props.password
-        })}>
-          {this.props.requesting ? 'Loading' : 'Submit'}
-        </button>
+        <RaisedButton
+          label={this.props.requesting ? 'Loading' : 'Submit'}
+          primary={true}
+          style={styles.submitWrapStyle}
+        >
+          <div
+            onClick={(e) => this.props.handleSubmit(e, {
+              login: this.props.login,
+              password: this.props.password
+            })}
+            style={styles.submitStyle}
+          ></div>
+        </RaisedButton>
         <h4>{this.props.success == false ? 'FAILED' : ''}</h4>
       </form>
     );

@@ -1,59 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import LoginButtons from './LoginButtons.jsx';
+import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+
+const styles = {
+  linkStyle: {
+    position: 'absolute',
+    display: 'block',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1
+  },
+  statisticButton: {
+    margin: '0 0 0 15px'
+  }
+};
 
 class App extends React.Component {
   render() {
-    const userNotLogged = () => {
-      return (
+    return (
+      <div>
+        <AppBar
+          title={<span>CRM</span>}
+          iconElementRight={<LoginButtons logged={this.props.loggedUser} />}
+          iconElementLeft={<span></span>}
+        />
+        {this.props.children}
         <div>
-          <h1>CRM</h1>
-          <div>
-            <Link
-              to="registration"
-            >
-              Sign up
-            </Link>
-          </div>
-          <div>
-            <Link
-              to="login"
-            >
-              Sign in
-            </Link>
-          </div>
-          {this.props.children}
-          <div>
+          <FlatButton
+            label="General statistic"
+            secondary={true}
+            style={styles.statisticButton}
+          >
             <Link
               to="statistics"
-            >
-              Statistics
-            </Link>
-          </div>
+              style={styles.linkStyle}
+            />
+          </FlatButton>
         </div>
-      );
-    };
-    const userLogged = () => {
-      return (
-        <div>
-          <h1>CRM</h1>
-          <div>
-            <Link
-              to="/"
-              onClick={() => this.props.handleLogOut()}
-            >
-              Sign out
-            </Link>
-          </div>
-          {this.props.children}
-        </div>
-      );
-    };
-    if (this.props.loggedUser) {
-      return userLogged();
-    } else {
-      return userNotLogged();
-    }
+      </div>
+    );
   }
 }
 

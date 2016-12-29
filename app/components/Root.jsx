@@ -1,6 +1,8 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import App from './App.jsx';
 import Welcome from './Welcome.jsx';
 import RegPage from './RegPage.jsx';
@@ -10,6 +12,11 @@ import CompanyPage from './CompanyPage.jsx';
 import ProjectPage from './ProjectPage.jsx';
 import TaskPage from './TaskPage.jsx';
 import StatsPage from './StatsPage.jsx';
+import SearchPage from './SearchPage.jsx';
+import UserStats from './UserStats.jsx';
+import CompanyReport from './CompanyReport.jsx';
+
+injectTapEventPlugin();
 
 const routes = {
   path: '/',
@@ -20,9 +27,12 @@ const routes = {
     { path: 'login', component: LoginPage },
     { path: 'account', component: Account },
     { path: 'company/:companyName', component: CompanyPage },
+    { path: 'report/company/:companyName', component: CompanyReport },
     { path: 'project/:projectName', component: ProjectPage },
     { path: 'task/:taskId', component: TaskPage },
-    { path: 'statistics', component: StatsPage }
+    { path: 'statistics', component: StatsPage },
+    { path: 'search', component: SearchPage },
+    { path: 'stats/:userId', component: UserStats }
   ]
 };
 
@@ -32,9 +42,11 @@ class Root extends React.Component {
   }
   render() {
     return (
-      <Provider store={this.props.store}>
-        <Router routes={routes} history={browserHistory} />
-      </Provider>
+      <MuiThemeProvider>
+        <Provider store={this.props.store}>
+          <Router routes={routes} history={browserHistory} />
+        </Provider>
+      </MuiThemeProvider>
     );
   }
 }

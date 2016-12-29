@@ -1,6 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { requestForm, resolveForm, addCompany } from '../actions/forms.jsx';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import { cyan500 } from 'material-ui/styles/colors';
+
+const styles = {
+  formStyle: {
+    padding: '20px 0'
+  },
+  submitStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1
+  },
+  submitWrapStyle: {
+    margin: '10px 0 0'
+  },
+  welcomeText: {
+    color: cyan500,
+    fontSize: '20px',
+    padding: '20px 0 10px'
+  }
+};
 
 class MakeCompanyForm extends React.Component {
   constructor(props) {
@@ -9,46 +34,47 @@ class MakeCompanyForm extends React.Component {
   componentDidMount() {
     this.props.handleSocket();
   }
+  componentWillUnmount() {
+    this.props.disableSocket();
+  }
   render() {
-    let title, description;
     return (
       <div>
-        <h5>Make Company</h5>
-        <form>
+        <h5 style={styles.welcomeText}>Make Company</h5>
+        <form style={styles.formStyle}>
           <div>
-            <label htmlFor="title">Company name</label>
-            <input
+            <TextField
+              hintText="Company name"
               type="text"
               name="title"
-              placeholder="Company name"
-              ref={node => {
-                title = node;
-              }}
               value={this.props.title || ''}
-              onChange={() => this.props.handleChange(title.value, title.name)}
+              onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
             />
           </div>
           <div>
-            <label htmlFor="description">Company description</label>
-            <input
+            <TextField
+              hintText="Company description"
               type="text"
               name="description"
-              placeholder="Company description"
-              ref={node => {
-                description = node;
-              }}
               value={this.props.description || ''}
-              onChange={() => this.props.handleChange(description.value, description.name)}
+              onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
             />
           </div>
-          <button onClick={(e) => this.props.handleSubmit(e, {
-            title: this.props.title,
-            description: this.props.description,
-            user: this.props.user,
-            userName: this.props.userName
-          })}>
-            {this.props.requesting ? 'Loading' : 'Submit'}
-          </button>
+          <RaisedButton
+            label={this.props.requesting ? 'Loading' : 'Submit'}
+            primary={true}
+            style={styles.submitWrapStyle}
+          >
+            <div
+              onClick={(e) => this.props.handleSubmit(e, {
+                title: this.props.title,
+                description: this.props.description,
+                user: this.props.user,
+                userName: this.props.userName
+              })}
+              style={styles.submitStyle}
+            ></div>
+          </RaisedButton>
           <h4>{this.props.success == false ? 'FAILED' : ''}</h4>
         </form>
       </div>
@@ -97,6 +123,9 @@ const mapDispatchToMakeCompanyForm = (dispatch, ownProps) => {
           dispatch(addCompany(data));
         }
       });
+    },
+    disableSocket: () => {
+      ownProps.socket.off('resMakeCompany');
     }
   };
 };

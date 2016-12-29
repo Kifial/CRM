@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { setCompanies, handleLink } from '../actions/account.jsx';
 import CompanyItem from './CompanyItem.jsx';
+import Subheader  from 'material-ui/Subheader';
+import { List } from 'material-ui/List';
 
 class CompanyList extends React.Component {
   constructor(props) {
@@ -9,11 +11,16 @@ class CompanyList extends React.Component {
   }
   componentDidMount() {
     this.props.setCompanies(this.props.userId);
+    this.props.handleSetCompanies();
+  }
+  componentWillUnmount() {
+    this.props.socket.off('getCompanies');
   }
   render() {
     if (this.props.companies.length) {
       return (
-        <div>
+        <List>
+          <Subheader>Your companies</Subheader>
           {this.props.companies.map(item =>
             <CompanyItem
               key={item._id}
@@ -23,7 +30,7 @@ class CompanyList extends React.Component {
               handleLink={() => this.props.handleLink(item._id)}
             />
           )}
-        </div>
+        </List>
       );
     } else {
       return (
@@ -44,6 +51,8 @@ const mapDispatchToCompanyList = (dispatch, ownProps) => {
   return {
     setCompanies: (userId) => {
       ownProps.socket.emit('getCompanies', { userId });
+    },
+    handleSetCompanies: () => {
       ownProps.socket.on('getCompanies', (data) => {
         dispatch(setCompanies(data));
       });

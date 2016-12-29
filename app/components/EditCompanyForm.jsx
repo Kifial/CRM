@@ -1,14 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { requestForm, resolveForm, addProject } from '../actions/forms.jsx';
+import { requestForm, resolveForm, editCompany } from '../actions/forms.jsx';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import { cyan500 } from 'material-ui/styles/colors';
 
 const styles = {
-  formStyle: {
-    padding: '20px 0'
-  },
   submitStyle: {
     position: 'absolute',
     top: 0,
@@ -20,14 +17,17 @@ const styles = {
   submitWrapStyle: {
     margin: '10px 0 0'
   },
-  welcomeText: {
+  mainTitle: {
     color: cyan500,
-    fontSize: '20px',
+    fontSize: '18px',
     padding: '20px 0 10px'
+  },
+  parentWrap: {
+    margin: '0 0 20px'
   }
 };
 
-class MakeProjectForm extends React.Component {
+class EditCompanyForm extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -39,12 +39,12 @@ class MakeProjectForm extends React.Component {
   }
   render() {
     return (
-      <div>
-        <h5 style={styles.welcomeText}>Make Project</h5>
-        <form style={styles.formStyle}>
+      <div style={styles.parentWrap}>
+        <h5 style={styles.mainTitle}>Edit Company</h5>
+        <form>
           <div>
             <TextField
-              hintText="Project name"
+              hintText="Company name"
               type="text"
               name="title"
               value={this.props.title || ''}
@@ -53,7 +53,7 @@ class MakeProjectForm extends React.Component {
           </div>
           <div>
             <TextField
-              hintText="Project description"
+              hintText="Company description"
               type="text"
               name="description"
               value={this.props.description || ''}
@@ -69,10 +69,7 @@ class MakeProjectForm extends React.Component {
               onClick={(e) => this.props.handleSubmit(e, {
                 title: this.props.title,
                 description: this.props.description,
-                user: this.props.user,
-                userName: this.props.userName,
-                company: this.props.company,
-                companyTitle: this.props.companyTitle
+                id: this.props.id
               })}
               style={styles.submitStyle}
             ></div>
@@ -84,61 +81,54 @@ class MakeProjectForm extends React.Component {
   }
 }
 
-const mapStateToMakeProjectForm = (state, ownProps) => {
-  if (state.forms.makeProjectForm) {
-    const form = state.forms.makeProjectForm;
+const mapStateToEditCompanyForm = (state, ownProps) => {
+  if (state.forms.editCompanyForm) {
+    const form = state.forms.editCompanyForm;
     return {
-      title: form.title,
-      description: form.description,
-      user: state.account.user.id,
-      userName: state.account.user.name,
-      company: state.account.currentPage.id,
-      companyTitle: state.account.currentPage.title
+      title: form.title || ownProps.title,
+      description: form.description || ownProps.description
     };
   } else {
     return {};
   }
 };
 
-const mapDispatchToMakeProjectForm = (dispatch, ownProps) => {
+const mapDispatchToEditCompanyForm = (dispatch, ownProps) => {
   return {
     handleChange: (value, field) => {
       dispatch({
         type: 'HANDLE_FORM_CHANGE',
-        form: 'makeProjectForm',
+        form: 'editCompanyForm',
         field,
         value
       });
     },
     handleSubmit: (e, values) => {
       e.preventDefault();
-      dispatch(requestForm('makeProjectForm'));
-      ownProps.socket.emit('reqMakeProject', {
+      dispatch(requestForm('editCompanyForm'));
+      ownProps.socket.emit('editCompany', {
         title: values.title,
         description: values.description,
-        user: values.user,
-        name: values.userName,
-        companyId: values.company,
-        companyTitle: values.companyTitle
+        id: values.id
       });
     },
     handleSocket: () => {
-      ownProps.socket.on('resMakeProject', (data) => {
-        dispatch(resolveForm('makeProjectForm', data.message));
+      ownProps.socket.on('editCompany', (data) => {
+        dispatch(resolveForm('editCompanyForm', data.message));
         if (data.message == 'success') {
-          dispatch(addProject(data));
+          dispatch(editCompany(data));
         }
       });
     },
     disableSocket: () => {
-      ownProps.socket.off('resMakeProject');
+      ownProps.socket.off('editCompany');
     }
   };
 };
 
-MakeProjectForm = connect(
-  mapStateToMakeProjectForm,
-  mapDispatchToMakeProjectForm
-)(MakeProjectForm);
+EditCompanyForm = connect(
+  mapStateToEditCompanyForm,
+  mapDispatchToEditCompanyForm
+)(EditCompanyForm);
 
-export default MakeProjectForm;
+export default EditCompanyForm;

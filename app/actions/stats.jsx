@@ -1,7 +1,14 @@
-export const getStats = (socket, statsPage) => {
-  socket.emit('getStats', {
-    page: statsPage
-  });
+export const getStats = (socket, statsPage, id) => {
+  if (id) {
+    socket.emit('getStats', {
+      page: statsPage,
+      id
+    });
+  } else {
+    socket.emit('getStats', {
+      page: statsPage
+    });
+  }
 };
 
 export const setListener = (dispatch, socket) => {
@@ -11,8 +18,18 @@ export const setListener = (dispatch, socket) => {
 };
 
 const setStats = (data) => {
-  return {
-    type: 'SET_STATS',
-    data
-  };
+  switch(data.page) {
+    case 'general':
+      return {
+        type: 'SET_STATS',
+        data
+      };
+    case 'user':
+      return {
+        type: 'SET_USER_STATS',
+        data
+      };
+    default:
+      return {};
+  }
 };

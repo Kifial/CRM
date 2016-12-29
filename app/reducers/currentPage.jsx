@@ -40,6 +40,45 @@ const currentPage = (state = {}, action) => {
         ...state,
         tasksCheckbox: !state.tasksCheckbox
       };
+    case 'HANDLE_SHOW_PROJECTS':
+      return {
+        ...state,
+        projectsCheckbox: !state.projectsCheckbox
+      };
+    case 'HANDLE_SHOW_ACTIVE_PROJECTS':
+      return {
+        ...state,
+        projectsActiveCheckbox: !state.projectsActiveCheckbox
+      };
+    case 'EDIT_COMPANY':
+      return {
+        ...state,
+        title: action.data.title,
+        description: action.data.description
+      };
+    case 'EDIT_PROJECT':
+      return {
+        ...state,
+        title: action.data.title,
+        description: action.data.description
+      };
+    case 'TOGGLE_FORM':
+      return {
+        ...state,
+        [action.form]: !state[action.form]
+      };
+    case 'ADD_USER_TO_COMPANY':
+      return {
+        ...state,
+        users: [ ...state.users, { id: action.user.id, name: action.user.id } ]
+      };
+    case 'ADD_USER_TO_PROJECT':
+      return {
+        ...state,
+        users: [ ...state.users, { id: action.user.id, name: action.user.id } ]
+      };
+    case 'DELETE_COMPANY':
+      return {};
     default:
       return state;
   }

@@ -10,7 +10,7 @@ export const resolveForm = (form, resolve) => {
     type: 'RESOLVE_FORM',
     form,
     resolve
-  }
+  };
 };
 
 export const logUser = (info) => {
@@ -18,27 +18,41 @@ export const logUser = (info) => {
   return {
     type: 'LOG_USER',
     userInfo: info
-  }
+  };
 };
 
 export const addCompany = (info) => {
   return {
     type: 'ADD_COMPANY',
     companyInfo: info
-  }
+  };
 };
 
 export const addProject = (info) => {
   return {
     type: 'ADD_PROJECT',
     projectInfo: info
-  }
+  };
 };
 
 export const addTask = (info) => {
   return {
     type: 'ADD_TASK',
     taskInfo: info
-  }
-}
+  };
+};
+
+export const editCompany = (data) => {
+  return {
+    type: 'EDIT_COMPANY',
+    data
+  };
+};
+
+export const editProject = (data) => {
+  return {
+    type: 'EDIT_PROJECT',
+    data
+  };
+};
 

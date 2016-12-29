@@ -3,6 +3,15 @@ import { connect } from 'react-redux';
 import { handleLink, handleTasksCheckbox } from '../actions/account.jsx';
 import { toggleTask } from '../actions/task.jsx';
 import TaskItem from './TaskItem.jsx';
+import Checkbox from 'material-ui/checkbox';
+
+const styles = {
+  tasksCheckbox: {
+    display: 'inline-block',
+    width: '212px',
+    padding: '10px 0 0'
+  }
+};
 
 class TaskList extends React.Component {
   constructor(props) {
@@ -38,14 +47,12 @@ class TaskList extends React.Component {
               />
             }
           })}
-          <div>
-            <input
-              type="checkbox"
-              name="checkbox"
-              onChange={() => this.props.handleCheckbox()}
-            />
-            <label htmlFor="checkbox">Hide achieved tasks</label>
-          </div>
+          <Checkbox
+            label="Hide achieved tasks"
+            name="checkbox"
+            onCheck={() => this.props.handleCheckbox()}
+            style={styles.tasksCheckbox}
+          />
         </div>
       );
     } else {

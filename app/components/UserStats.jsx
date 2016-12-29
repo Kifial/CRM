@@ -29,13 +29,13 @@ const styles = {
   }
 };
 
-class StatsPage extends React.Component {
+class UserStats extends React.Component {
   constructor(props) {
     super(props);
   }
   componentDidMount() {
     this.props.setListener(this.props.socket);
-    this.props.getStats(this.props.socket);
+    this.props.getStats(this.props.socket, this.props.userId);
   }
   componentWillUnmount() {
     this.props.disableSocket(this.props.socket);
@@ -43,11 +43,12 @@ class StatsPage extends React.Component {
   render() {
     return (
       <div style={styles.parentWrap}>
-        <h2 style={styles.mainTitle}>{`Amount of registered users: ${this.props.users}`}</h2>
-        <h2 style={styles.mainTitle}>{`Amount of companies: ${this.props.companies}`}</h2>
-        <h2 style={styles.mainTitle}>{`Amount of projects: ${this.props.projects}`}</h2>
-        <h2 style={styles.mainTitle}>{`Amount of tasks: ${this.props.tasks}`}</h2>
-        <h3 style={styles.secondaryTitle}>{`Users on website: 1`}</h3>
+        <h2 style={styles.mainTitle}>{`Amount of your companies: ${this.props.companies}`}</h2>
+        <h2 style={styles.mainTitle}>{`Amount of your projects: ${this.props.projects}`}</h2>
+        <h2 style={styles.mainTitle}>{`Amount of your tasks: ${this.props.tasks}`}</h2>
+        <h2 style={styles.mainTitle}>{`Amount of tasks you've done: ${this.props.doneTasks}`}</h2>
+        <h3 style={styles.secondaryTitle}>{`Users in your companies: 1`}</h3>
+        <h3 style={styles.secondaryTitle}>{`Users in your projects: 1`}</h3>
         <RaisedButton
           label="Print it!"
           primary={true}
@@ -65,24 +66,25 @@ class StatsPage extends React.Component {
   }
 }
 
-StatsPage.defaultProps = {
+UserStats.defaultProps = {
   socket
 };
 
-const mapStateToStatsPageProps = (state) => {
-  const stats = state.stats.general;
+const mapStateToUserStatsProps = (state) => {
+  const stats = state.stats.user;
   return {
-    users: stats.users || '',
+    userId: state.account.user.id,
     companies: stats.companies || '',
     projects: stats.projects || '',
-    tasks: stats.tasks || ''
+    tasks: stats.tasks || '',
+    doneTasks: stats.doneTasks || ''
   };
 };
 
-const mapDispatchToStatsPageProps = (dispatch, ownProps) => {
+const mapDispatchToUserStatsProps = (dispatch, ownProps) => {
   return {
-    getStats: (socket) => {
-      getStats(socket, 'general');
+    getStats: (socket, id) => {
+      getStats(socket, 'user', id);
     },
     setListener: (socket) => {
       setListener(dispatch, socket);
@@ -93,9 +95,9 @@ const mapDispatchToStatsPageProps = (dispatch, ownProps) => {
   };
 };
 
-StatsPage = connect(
-  mapStateToStatsPageProps,
-  mapDispatchToStatsPageProps
-)(StatsPage);
+UserStats = connect(
+  mapStateToUserStatsProps,
+  mapDispatchToUserStatsProps
+)(UserStats);
 
-export default StatsPage;
+export default UserStats;

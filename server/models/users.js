@@ -14,6 +14,10 @@ const usersSchema = new Schema({
   companies: [{
     id: ObjectId,
     title: String
+  }],
+  projects: [{
+    id: ObjectId,
+    title: String
   }]
 });
 

@@ -1,5 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router';
+import { ListItem } from 'material-ui/List';
+import { pinkA200 } from 'material-ui/styles/colors';
+
+const styles = {
+  companyTitle: {
+    color: pinkA200,
+    fontSize: '20px'
+  }
+};
 
 class ProjectItem extends React.Component {
   constructor(props) {
@@ -7,12 +16,13 @@ class ProjectItem extends React.Component {
   }
   render() {
     return (
-      <div>
+      <ListItem disabled={true}>
         <Link
           to={`/project/${this.props.title}`}
           onClick={() => this.props.handleLink()}
+          style={styles.companyTitle}
         >{this.props.title}</Link>
-      </div>
+      </ListItem>
     );
   }
 }

@@ -1,6 +1,31 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { requestForm, resolveForm, addTask } from '../actions/forms.jsx';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
+import { cyan500 } from 'material-ui/styles/colors';
+
+const styles = {
+  formStyle: {
+    padding: '20px 0'
+  },
+  submitStyle: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    zIndex: 1
+  },
+  submitWrapStyle: {
+    margin: '10px 0 0'
+  },
+  welcomeText: {
+    color: cyan500,
+    fontSize: '20px',
+    padding: '20px 0 10px'
+  }
+};
 
 class MakeTaskForm extends React.Component {
   constructor(props) {
@@ -9,48 +34,49 @@ class MakeTaskForm extends React.Component {
   componentDidMount() {
     this.props.handleSocket();
   }
+  componentWillUnmount() {
+    this.props.disableSocket();
+  }
   render() {
-    let title, description;
     return (
       <div>
-        <h5>Make Task</h5>
-        <form>
+        <h5 style={styles.welcomeText}>Make Task</h5>
+        <form style={styles.formStyle}>
           <div>
-            <label htmlFor="title">Task title</label>
-            <input
+            <TextField
+              hintText="Task title"
               type="text"
               name="title"
-              placeholder="Task title"
-              ref={node => {
-                title = node;
-              }}
               value={this.props.title || ''}
-              onChange={() => this.props.handleChange(title.value, title.name)}
+              onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
             />
           </div>
           <div>
-            <label htmlFor="description">Task description</label>
-            <input
+            <TextField
+              hintText="Task description"
               type="text"
               name="description"
-              placeholder="Task description"
-              ref={node => {
-                description = node;
-              }}
               value={this.props.description || ''}
-              onChange={() => this.props.handleChange(description.value, description.name)}
+              onChange={(e) => this.props.handleChange(e.target.value, e.target.name)}
             />
           </div>
-          <button onClick={(e) => this.props.handleSubmit(e, {
-            title: this.props.title,
-            description: this.props.description,
-            user: this.props.user,
-            userName: this.props.userName,
-            project: this.props.project,
-            projectTitle: this.props.projectTitle
-          })}>
-            {this.props.requesting ? 'Loading' : 'Submit'}
-          </button>
+          <RaisedButton
+            label={this.props.requesting ? 'Loading' : 'Submit'}
+            primary={true}
+            style={styles.submitWrapStyle}
+          >
+            <div
+              onClick={(e) => this.props.handleSubmit(e, {
+                title: this.props.title,
+                description: this.props.description,
+                user: this.props.user,
+                userName: this.props.userName,
+                project: this.props.project,
+                projectTitle: this.props.projectTitle
+              })}
+              style={styles.submitStyle}
+            ></div>
+          </RaisedButton>
           <h4>{this.props.success == false ? 'FAILED' : ''}</h4>
         </form>
       </div>
@@ -107,6 +133,9 @@ const mapDispatchToMakeTaskForm = (dispatch, ownProps) => {
           dispatch(addTask(data));
         }
       });
+    },
+    disableSocket: () => {
+      ownProps.socket.off('resMakeTask');
     }
   };
 };
